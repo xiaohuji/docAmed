@@ -96,13 +96,27 @@ CT图像矩阵的数目在行和列的两个方向上常是相同的，但在其
 
 https://blog.csdn.net/a8039974/article/details/108545246
 
+## Baseline
+
+医生给出ROI
+
+随机抽取n例 CT 图像，ICC检验
+
+提取feature ICC检验
+
+确定体素大小
+
+## 诊断
+
 ### Distinguishing common renal cell carcinomas from benign renal tumors based on machine learning
+
+基于机器学习的普通肾细胞癌与良性肾肿瘤鉴别
 
 #### 概述
 
 ![image-20230608093720983](CT.assets/image-20230608093720983.png)
 
-使用 CatBoost 进行特征选择和 ML 模型建立。使用 ROC曲线曲线下面积(AUC)来评估 ML 模型的性能。结果基于三维图像的 ML 模型比基于二维图像的 ML 模型表现更好
+使用 CatBoost 进行特征选择和 ML 模型建立。使用 ROC曲线曲线下面积(AUC)来评估 ML 模型的性能。结果**基于三维图像的 ML 模型比基于二维图像的 ML 模型表现更好**
 
 三位放射科医师通过参考分类器的决策，均取得了较好的效果，准确率从0.82提高到0.87，从0.82提高到0.88，从0.76提高到0.87
 
@@ -140,7 +154,13 @@ https://blog.csdn.net/a8039974/article/details/108545246
 
 ##### 存疑
 
-重采样时体素大小定义为0.8 × 0.8 × 0.8 mm。**像素重采样可以提高模式的精度和总体参数估计，包括上采样和下采样。**
+重采样时体素大小定义为**0.8 × 0.8 × 0.8 mm**。**像素重采样可以提高模式的精度和总体参数估计，包括上采样和下采样。**
+
+#### 肿瘤分割
+
+![image-20230711113803194](CT.assets/image-20230711113803194.png)
+
+医生手动分割
 
 #### 特征提取
 
@@ -154,92 +174,9 @@ https://blog.csdn.net/a8039974/article/details/108545246
 
 为了解决不平衡数据集对分类器性能的不利影响，从最优特征的联合加权出发，采用合成少数过采样技术(SMOTE)生成少数群体样本。**然而，由于这些算法不可避免的过度拟合，SMOTE 生成的统计数据不太真实。**不平衡的数据在一定程度上反映了肾脏恶性肿瘤和良性肿瘤的真实发生率。此外，本研究只使用了一种算法来建立最大似然，这也是一个潜在的弱点。因此，需要进行大规模、多中心、多算法的研究来进一步验证我们的研究（加工作量？）
 
-### Deep learning assisted CT–based diagnosis of cervical lymph node metastasis of oral cancer
-
-#### 概述
-
-![image-20230608122915140](CT.assets/image-20230608122915140.png)
-
-#### 亮点
-
-- 现代医学影像学工具对淋巴结转移没有很好的认识。
-- 迁移学习可以提高深度学习模型预测的准确性。
-- 深度学习有助于准确识别淋巴结转移
-- 样本量大
-- 对结节分级
-- 研究内容为 CECT，具有很强的普遍性和适用性，符合中国国情。FDG PET/CT 比 CT/MRI 能更好地检测颈部隐匿性转移。然而，这种方法是昂贵的，只有少数大型医院配备这样昂贵的机器。
-- 数据集好，有全分割数据集，然后在全分割上学习分割能力，然后在训练分类能力
-- ![image-20230609101742264](CT.assets/image-20230609101742264.png)
-
-不知道这个radiology department怎么得出来的
-
-![image-20230609103119485](CT.assets/image-20230609103119485.png)
-
-#### 队列
-
-![image-20230608160346723](CT.assets/image-20230608160346723.png)
-
-对于1466个样本：
-
-**选择5412幅图像进行全层数据标记(阶段 I)** 
-
-第一阶段旨在自动识别宫颈 CECT 图像中的不同软硬组织，特别是区分和识别 LN，希望在下一阶段的训练中实现 LN 更准确的识别和定位。
-
-**选择5601幅图像进行淋巴结转移鉴别数据标记(阶段 II)**
-
-II 期设计用于准确区分淋巴结转移。LN- 和 LN + 被特异性标记(图2)。共筛选了5601个 CECT 图像，其中2126个是 LNs + ，涉及1667个图像，6140个是 LNs-，涉及3934个图像(图1)
-
-![image-20230608144344919](CT.assets/image-20230608144344919.png)
-
-
-
-
-
-![image-20230608132807286](CT.assets/image-20230608132807286.png)
-
-![image-20230608132440030](CT.assets/image-20230608132440030.png)
-
-使用联合癌症委员会第八版 TNM 分类(TNM8)标准 IQR 四分差
-
-
-
-#### 分割方法
-
-Mask R-CNN, Resnet101，FPN
-
-![image-20230608133449920](CT.assets/image-20230608133449920.png)
-
-#### 训练方式有点奇特
-
-在我们的研究中，数据集被重组并分为训练(60%) ，验证(30%)和测试集(10%)。对于模型训练，我们使用掩码 R-CNN COCO 模型权重作为初始权重，并通过随机梯度下降(SGD)策略进行优化。在第一阶段，模型在训练集上总共训练了50个纪元，并在验证集上的每个纪元之后进行验证。
-
-在第二阶段，以淋巴结转移鉴别标记数据(通过旋转和镜像放大)作为数据集。第二阶段模型(没有 TL)总共训练了100个纪元。损失的趋势如图所示。随后，采用训练结果的第一阶段模型作为 TL 的初始模型权重，以提高训练效果。然而，阶段 II-TL 模型(含 TL)总共训练了10个epoch。损失的趋势如图所示。S3e，f.在训练过程中，每个epoch后计算验证损失，每个时代后保存模型权重，验证损失有所改善。
-
-![image-20230608150234344](CT.assets/image-20230608150234344.png)
-
-![image-20230609101056387](CT.assets/image-20230609101056387.png)
-
-用了transfer learning后初始loss小，10epoch就降下
-
-
-
-#### 没看懂
-
-没有手术的颈部水平模糊不清，这些水平的 LN 状态无法标记。**但是预测包含了没有病理信息的水平，当这些预测的实例对象出现在模型评价中时，相应的实例在标记样本中无法识别。因此，在匹配计算过程中产生了大量的负样本，影响了模型的整体评价**，其 AP 值不能直接反映模型的效果。因此，三个新的定制但更严格的模型评价标准被引入: LN 准确性，LN + 准确性和临床准确性。
-
-![image-20230608152955014](CT.assets/image-20230608152955014.png)
-
-#### 跟人比
-
-![image-20230608155528656](CT.assets/image-20230608155528656.png)
-
-#### 颈部分级
-
-The neck is divided into a total of seven levels based on the topographical subdivision 
-
-![image-20230608160144879](CT.assets/image-20230608160144879.png)
-
 ### Deep learning–assisted diagnosis of benign and malignant parotid tumors based on CT
+
+基于CT的腮腺良恶性肿瘤的深度学习辅助诊断
 
 #### 概述
 
@@ -252,7 +189,7 @@ The neck is divided into a total of seven levels based on the topographical subd
 - 使用已建立的深度学习模型可加速腮腺肿瘤患者的临床决策过程。
 - 虽然之前研究取得了令人满意的诊断性能，但它们受到样本量小和缺乏外部验证的限制。本研究的目的是开发和验证多中心数据集上的最佳深度学习模型
 
-#### 队列
+#### 队列*
 
 两个中心招募了573例经组织病理学证实的 BPT 和 MPT 患者(图1)。
 
@@ -270,7 +207,7 @@ The neck is divided into a total of seven levels based on the topographical subd
 
 最终队列包括来自中心1的385名患者，其中包括266名 BPT 患者和119名 MPT 患者，以及来自中心2的188名患者，其中包括130名 BPT 患者和58名 MPT 患者(组织病理学类型和数量见补充表 S1)
 
-#### 方法
+#### 分割方法
 
 ##### baseline
 
@@ -278,9 +215,17 @@ The neck is divided into a total of seven levels based on the topographical subd
 
 ![image-20230609134014736](CT.assets/image-20230609134014736.png)
 
-在动脉期 CT 图像上手动绘制肿瘤轮廓来获得肿瘤分段的3D 体积(VOI)。通过随机抽取30例 CT 图像，计算组内相关系数(ICC) ，评价放射学特征的重复性。
+在动脉期 CT 图像上**手动**绘制肿瘤轮廓来获得肿瘤分段的3D 体积(VOI)。通过随机抽取30例 CT 图像，**计算组内相关系数(ICC)** ，评价放射学特征的重复性。
 
-使用 PyRadiomics 3.0.1版进行图像预处理和特征提取，并将所有图像重采样到1 × 1 × 1mm3的体素间距。同时，采用25 Hounsfield 单元(HU)的固定仓宽进行灰值离散化。总共为每个肿瘤提取了851个放射组学特征
+##### icc检验：
+
+ICC常用于衡量某个指标（比如，皮层厚度）在多次测量中的一致性/相似性（即信度）。在概念上，ICC等于真实的（被试间）变异除以观测的变异，观测的变异等于真实的变异加上噪声变异。比如，ICC=0.5表示真实变异和噪声变异相同。ICC越高，表明观测/测量越可靠。ICC的理论范围在0-1，一般地，ICC位于0-0.5之间表示信度差，0.5-0.75表示中等，0.75-0.9表示好，0.9-1表示极好（也存在其他分类标准）。
+
+链接：https://www.jianshu.com/p/b7a35808c0ac
+
+#### 特征提取
+
+使用 PyRadiomics 3.0.1版进行图像预处理和特征提取，**并将所有图像重采样到1 × 1 × 1mm3的体素间距**。同时，采用25 Hounsfield 单元(HU)的固定仓宽进行灰值离散化。总共为每个肿瘤提取了**851个放射组学特征**
 
 使用 Mann-Whitney U 检验(p < 0.05)初步筛选 ICC > 0.75的放射学特征。所有的放射组学特征使用 z 分数标准化，然后进一步筛选最小绝对收缩和选择算子(LASSO)。采用合成少数过采样技术(SMOTE)算法以1:1的比例平衡训练集中的少数样本。使用敏感性、特异性、准确性、阴性预测值(NPV)、阳性预测值(PPV)和 ROC曲线曲线下面积(ROC)来评估模型的预测性能。
 
@@ -317,3 +262,117 @@ BPTs 通常采用保留面神经的浅表腮腺切除术治疗，而 MPTs 采用
 第四，基于 ML 的模型开发在医学领域的未来似乎涉及多放射组学和多模态成像的结合; 
 
 然而，由于我们的研究的回顾性设计，我们没有建立这种基于美国，CT 和 MR 图像的腮腺肿瘤患者的组合模型，这个问题将是我们未来研究工作的一个重要方向
+
+### Artifcial intelligence–based prediction of cervical lymph node  metastasis in papillary thyroid cancer with CT
+
+基于人工智能的颈部淋巴结预测甲状腺乳头状癌转移的CT表现
+
+#### 概述
+
+![image-20230711161934213](CT.assets/image-20230711161934213.png)
+
+#### 分割方法
+
+手动分割
+
+![image-20230711155827686](CT.assets/image-20230711155827686.png)
+
+## 分割
+
+### Deep learning assisted CT–based diagnosis of cervical lymph node metastasis of oral cancer
+
+深度学习辅助ct诊断口腔癌颈部淋巴结转移
+
+#### 概述
+
+![image-20230608122915140](CT.assets/image-20230608122915140.png)
+
+#### 亮点
+
+- 现代医学影像学工具对淋巴结转移没有很好的认识。
+- 迁移学习可以提高深度学习模型预测的准确性。
+- 深度学习有助于准确识别淋巴结转移
+- 样本量大
+- 对结节分级
+- 研究内容为 CECT，具有很强的普遍性和适用性，符合中国国情。FDG PET/CT 比 CT/MRI 能更好地检测颈部隐匿性转移。然而，这种方法是昂贵的，只有少数大型医院配备这样昂贵的机器。
+- 数据集好，有全分割数据集，然后在全分割上学习分割能力，然后在训练分类能力
+- ![image-20230609101742264](CT.assets/image-20230609101742264.png)
+
+不知道这个radiology department怎么得出来的（医生和学生的平均水平？）
+
+![image-20230609103119485](CT.assets/image-20230609103119485.png)
+
+#### 队列
+
+![image-20230608160346723](CT.assets/image-20230608160346723.png)
+
+对于1466个样本：
+
+**选择5412幅图像进行全层数据标记(阶段 I)** 
+
+第一阶段旨在自动识别宫颈 CECT 图像中的不同软硬组织，特别是区分和识别 LN，希望在下一阶段的训练中实现 LN 更准确的识别和定位。
+
+**选择5601幅图像进行淋巴结转移鉴别数据标记(阶段 II)**
+
+II 期设计用于准确区分淋巴结转移。LN- 和 LN + 被特异性标记(图2)。共筛选了5601个 CECT 图像，其中2126个是 LNs + ，涉及1667个图像，6140个是 LNs-，涉及3934个图像(图1)
+
+![image-20230608144344919](CT.assets/image-20230608144344919.png)
+
+
+
+
+
+![image-20230608132807286](CT.assets/image-20230608132807286.png)
+
+![image-20230608132440030](CT.assets/image-20230608132440030.png)
+
+使用联合癌症委员会第八版 TNM 分类(TNM8)标准 IQR 四分差
+
+
+
+#### 分割方法
+
+Mask R-CNN, Resnet101，FPN 
+
+![image-20230608133449920](CT.assets/image-20230608133449920.png)
+
+#### 训练方式有点奇特
+
+在我们的研究中，数据集被重组并分为训练(60%) ，验证(30%)和测试集(10%)。对于模型训练，我们使用掩码 R-CNN COCO 模型权重作为初始权重，并通过随机梯度下降(SGD)策略进行优化。在第一阶段，模型在训练集上总共训练了50个epoch，并在验证集上的每个epoch之后进行验证。
+
+在第二阶段，以淋巴结转移鉴别标记数据(通过旋转和镜像放大)作为数据集。第二阶段模型(没有 TL)总共训练了100个纪元。损失的趋势如图所示。随后，采用训练结果的第一阶段模型作为 TL 的初始模型权重，以提高训练效果。然而，阶段 II-TL 模型(含 TL)总共训练了10个epoch。损失的趋势如图所示。S3e，f.在训练过程中，每个epoch后计算验证损失，每个时代后保存模型权重，验证损失有所改善。
+
+![image-20230608150234344](CT.assets/image-20230608150234344.png)
+
+![image-20230609101056387](CT.assets/image-20230609101056387.png)
+
+用了transfer learning后初始loss小，10epoch就降下
+
+
+
+#### 没看懂
+
+没有手术的颈部水平模糊不清，这些水平的 LN 状态无法标记。**但是预测包含了没有病理信息的水平，当这些预测的实例对象出现在模型评价中时，相应的实例在标记样本中无法识别。因此，在匹配计算过程中产生了大量的负样本，影响了模型的整体评价**，其 AP 值不能直接反映模型的效果。因此，三个新的定制但更严格的模型评价标准被引入: LN 准确性，LN + 准确性和临床准确性。
+
+![image-20230608152955014](CT.assets/image-20230608152955014.png)
+
+#### 跟医生比较
+
+![image-20230608155528656](CT.assets/image-20230608155528656.png)
+
+#### 颈部分级
+
+The neck is divided into a total of seven levels based on the topographical subdivision 
+
+![image-20230608160144879](CT.assets/image-20230608160144879.png)
+
+#### 代码链接
+
+Our networks were constructed based on the Mask RCNN framework, and the code for the Mask R-CNN framework we referenced can be downloaded from the GitHub repository https:// github.com/facebookresearch/Detectron and https://github.com/ matterport/Mask_RCNN. Our data-labeling platform was deployed based on the privatization of the open-source data–labeling platform Label Studio at https://github.com/heartexlabs/label-studio. We trained on a computer with an NVIDIA V100 GPU, and the codes we used for training are available at the GitHub repository https://github.com/ whucsss/LNdiagnosis-stage1 and https://github.com/whucsss/ LNdiagnosis-stage2
+
+### Automated lung cancer assessment on 18F-PET/CT using Retina U-Net and anatomical region segmentation
+
+基于视网膜的18F-PET/CT自动肺癌评估U-Net和解剖区域分割
+
+#### 概述
+
