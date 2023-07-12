@@ -271,7 +271,7 @@ BPTs 通常采用保留面神经的浅表腮腺切除术治疗，而 MPTs 采用
 
 #### 概述
 
-![image-20230711161934213](CT.assets/image-20230711161934213.png)
+<img src="CT.assets/image-20230711161934213.png" alt="image-20230711161934213" style="zoom: 50%;" />
 
 #### 分割方法
 
@@ -281,15 +281,45 @@ BPTs 通常采用保留面神经的浅表腮腺切除术治疗，而 MPTs 采用
 
 ## 分割
 
-### Deep learning assisted CT–based diagnosis of cervical lymph node metastasis of oral cancer
+### 主要类别：
+
+#### unet
+
+<img src="CT.assets/image-20230712152902452.png" alt="image-20230712152902452" style="zoom: 80%;" />
+
+D-UNet
+
+<img src="CT.assets/image-20230712165805001.png" alt="image-20230712165805001" style="zoom: 50%;" />
+
+**[UCTransNet](https://github.com/McGregorWwww/UCTransNet)**
+
+<img src="CT.assets/Framework-16891521162805.jpg" alt="framework" style="zoom: 33%;" />
+
+mask rcnn
+
+![img](CT.assets/v2-e64a99b38f411c337f538eb5f093bdf3_720w.png)
+
+
+
+~~yolo8~~
+
+maskFormer
+
+### 数据增强方式：
+
+通过对可用的训练图像应用弹性形变来使用过度的数据增强，因为形变图像组织结构中最常见的变化，可以模拟其他真实数据。在3x3网格上的随机位移向量生成平滑变形。位移从具有10个像素标准偏差的高斯分布中采样。然后使用双三次插值计算每像素位移。收缩路径末端的退出层执行进一步的隐式数据扩充。
+
+### paper
+
+#### Deep learning assisted CT–based diagnosis of cervical lymph node metastasis of oral cancer
 
 深度学习辅助ct诊断口腔癌颈部淋巴结转移
 
-#### 概述
+##### 概述
 
 ![image-20230608122915140](CT.assets/image-20230608122915140.png)
 
-#### 亮点
+##### 亮点
 
 - 现代医学影像学工具对淋巴结转移没有很好的认识。
 - 迁移学习可以提高深度学习模型预测的准确性。
@@ -304,7 +334,7 @@ BPTs 通常采用保留面神经的浅表腮腺切除术治疗，而 MPTs 采用
 
 ![image-20230609103119485](CT.assets/image-20230609103119485.png)
 
-#### 队列
+##### 队列
 
 ![image-20230608160346723](CT.assets/image-20230608160346723.png)
 
@@ -332,13 +362,13 @@ II 期设计用于准确区分淋巴结转移。LN- 和 LN + 被特异性标记(
 
 
 
-#### 分割方法
+##### 分割方法
 
 Mask R-CNN, Resnet101，FPN 
 
 ![image-20230608133449920](CT.assets/image-20230608133449920.png)
 
-#### 训练方式有点奇特
+##### 训练方式有点奇特
 
 在我们的研究中，数据集被重组并分为训练(60%) ，验证(30%)和测试集(10%)。对于模型训练，我们使用掩码 R-CNN COCO 模型权重作为初始权重，并通过随机梯度下降(SGD)策略进行优化。在第一阶段，模型在训练集上总共训练了50个epoch，并在验证集上的每个epoch之后进行验证。
 
@@ -352,29 +382,30 @@ Mask R-CNN, Resnet101，FPN
 
 
 
-#### 没看懂
+##### 没看懂
 
 没有手术的颈部水平模糊不清，这些水平的 LN 状态无法标记。**但是预测包含了没有病理信息的水平，当这些预测的实例对象出现在模型评价中时，相应的实例在标记样本中无法识别。因此，在匹配计算过程中产生了大量的负样本，影响了模型的整体评价**，其 AP 值不能直接反映模型的效果。因此，三个新的定制但更严格的模型评价标准被引入: LN 准确性，LN + 准确性和临床准确性。
 
 ![image-20230608152955014](CT.assets/image-20230608152955014.png)
 
-#### 跟医生比较
+##### 跟医生比较
 
 ![image-20230608155528656](CT.assets/image-20230608155528656.png)
 
-#### 颈部分级
+##### 颈部分级
 
 The neck is divided into a total of seven levels based on the topographical subdivision 
 
 ![image-20230608160144879](CT.assets/image-20230608160144879.png)
 
-#### 代码链接
+##### 代码链接
 
 Our networks were constructed based on the Mask RCNN framework, and the code for the Mask R-CNN framework we referenced can be downloaded from the GitHub repository https:// github.com/facebookresearch/Detectron and https://github.com/ matterport/Mask_RCNN. Our data-labeling platform was deployed based on the privatization of the open-source data–labeling platform Label Studio at https://github.com/heartexlabs/label-studio. We trained on a computer with an NVIDIA V100 GPU, and the codes we used for training are available at the GitHub repository https://github.com/ whucsss/LNdiagnosis-stage1 and https://github.com/whucsss/ LNdiagnosis-stage2
 
-### Automated lung cancer assessment on 18F-PET/CT using Retina U-Net and anatomical region segmentation
+#### Automated lung cancer assessment on 18F-PET/CT using Retina U-Net and anatomical region segmentation
 
 基于视网膜的18F-PET/CT自动肺癌评估U-Net和解剖区域分割
 
-#### 概述
+##### 概述
 
+#### D-UNet: a dimension-fusion U shape network for chronic stroke lesion segmentation
