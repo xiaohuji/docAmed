@@ -1,5 +1,7 @@
 # CT
 
+ background-color: rgb(146 171 116); opacity: 0.3;
+
 ### 基本概念
 
 #### **1 像素（Pixel）和体素（Voxel）**
